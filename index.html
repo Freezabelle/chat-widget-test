@@ -19,11 +19,12 @@
       overflow: hidden;
       display: flex;
       flex-direction: column-reverse;
+      padding: 10px;
     }
 
     .message {
-      padding: 4px 8px;
-      margin: 2px 0;
+      padding: 6px 12px;
+      margin: 4px 0;
       background: rgba(0,0,0,0.6);
       border-radius: 6px;
       max-width: 90%;
@@ -32,7 +33,39 @@
 </head>
 <body>
   <div id="chat"></div>
-  <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js" defer></script>
-<script src="./script.js" defer></script>
+
+  <!-- Laad tmi.js -->
+  <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
+
+  <!-- Eigen script NA het laden van tmi.js -->
+  <script>
+    // Wacht tot tmi.js echt beschikbaar is
+    window.addEventListener('load', function () {
+      const CHANNEL_NAME = "jouwtwitchnaam"; // <-- vervang met jouw Twitch kanaalnaam
+
+      const client = new tmi.Client({
+        connection: {
+          secure: true,
+          reconnect: true
+        },
+        channels: [ CHANNEL_NAME ]
+      });
+
+      client.connect();
+
+      client.on('message', (channel, tags, message, self) => {
+        const chat = document.getElementById("chat");
+
+        const msg = document.createElement("div");
+        msg.className = "message";
+        msg.innerHTML = `<strong>${tags['display-name']}:</strong> ${message}`;
+        chat.prepend(msg);
+
+        if (chat.children.length > 20) {
+          chat.removeChild(chat.lastChild);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
