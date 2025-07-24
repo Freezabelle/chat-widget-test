@@ -34,37 +34,34 @@
 <body>
   <div id="chat"></div>
 
-  <!-- Laad tmi.js -->
-  <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
+  <!-- Gebruik moderne ES Module syntax via Skypack -->
+  <script type="module">
+    import tmi from "https://cdn.skypack.dev/tmi.js";
 
-  <!-- Eigen script NA het laden van tmi.js -->
-  <script>
-    // Wacht tot tmi.js echt beschikbaar is
-    window.addEventListener('load', function () {
-      const CHANNEL_NAME = "jouwtwitchnaam"; // <-- vervang met jouw Twitch kanaalnaam
+    const CHANNEL_NAME = "jouwtwitchnaam"; // <-- vervang met je kanaalnaam
 
-      const client = new tmi.Client({
-        connection: {
-          secure: true,
-          reconnect: true
-        },
-        channels: [ CHANNEL_NAME ]
-      });
+    const client = new tmi.Client({
+      connection: {
+        secure: true,
+        reconnect: true
+      },
+      channels: [CHANNEL_NAME]
+    });
 
-      client.connect();
+    client.connect();
 
-      client.on('message', (channel, tags, message, self) => {
-        const chat = document.getElementById("chat");
+    client.on('message', (channel, tags, message, self) => {
+      const chat = document.getElementById("chat");
 
-        const msg = document.createElement("div");
-        msg.className = "message";
-        msg.innerHTML = `<strong>${tags['display-name']}:</strong> ${message}`;
-        chat.prepend(msg);
+      const msg = document.createElement("div");
+      msg.className = "message";
+      msg.innerHTML = `<strong>${tags['display-name']}:</strong> ${message}`;
 
-        if (chat.children.length > 20) {
-          chat.removeChild(chat.lastChild);
-        }
-      });
+      chat.prepend(msg);
+
+      if (chat.children.length > 20) {
+        chat.removeChild(chat.lastChild);
+      }
     });
   </script>
 </body>
